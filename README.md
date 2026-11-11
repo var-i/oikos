@@ -60,12 +60,20 @@ Gotchas:
 ## Linux (non-NixOS)
 
 ```sh
-nix run home-manager \
-  --extra-experimental-features "nix-command flakes" \
+NIX_CONFIG="experimental-features = nix-command flakes" \
+  nix run home-manager \
   -- switch --flake ".#linux" --impure
 ```
 
 On the Raspberry Pi use `.#linux-aarch64`.
+
+Flakes are enabled through `NIX_CONFIG`, not `--extra-experimental-features`: the flag only reaches the outer
+`nix run`, while home-manager runs its own `nix` commands that only see the environment. To enable flakes
+permanently instead (then drop the `NIX_CONFIG=...` line):
+
+```sh
+mkdir -p ~/.config/nix && echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
 
 Unlike on macOS:
 
